@@ -1,0 +1,31 @@
+<?php
+$this->headScript()->appendFile($this->assetUrl('js/hide-site-properties.js', 'HideSiteProperties'));
+$this->headLink()->appendStylesheet($this->assetUrl('css/hide-site-properties.css', 'HideSiteProperties'));
+$this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
+?>
+
+
+<?php echo $this->pageTitle($this->translate('Hide Site Properties'), 1, $this->translate('Sites'), $this->translate('Settings')); ?>
+<script type='text/javascript'>
+    var hiddenProperties = <?php echo $hiddenProperties; ?>
+</script>
+
+<?php echo $this->form()->openTag($form); ?>
+
+<div id='hide-site-properties-properties'>
+    <p>
+        <?php echo $this->translate("Choose properties from the sidebar to be searchable"); ?>
+    </p>
+</div>
+
+<fieldset id='page-actions'>
+    <button type="submit"><?php echo $this->translate('Save'); ?></button>
+</fieldset>
+
+<?php echo $this->formCollection($form, false); ?>
+
+<?php echo $this->form()->closeTag($form); ?>
+
+<div class='sidebar active'>
+<?php echo $this->propertySelector('Select properties to be searchable'); ?>
+</div>

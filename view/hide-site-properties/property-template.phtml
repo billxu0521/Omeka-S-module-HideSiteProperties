@@ -1,0 +1,25 @@
+<?php
+$this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
+?>
+<div class="resource-values field template">
+    <input type="hidden" disabled="disabled" name="propertyLabel[]" class="property-label"></input>
+    
+    <div class="field-meta">    
+        <div class="field-label"></div>
+        <a href="#" class="expand" aria-label="<?php echo $this->translate("Expand"); ?>"></a>
+        <div class="collapsible">
+            <div class="field-description"></div>
+            <div class="field-term" title="<?php echo $this->translate("Property term for development use"); ?>"></div>
+        </div>
+    </div>
+    <span class="restore-property"><?php echo $this->translate("Property to be removed"); ?></span>
+    <ul class="actions hide-site-properties">
+        <li>
+            <a href="#" 
+            class="o-icon-delete remove-property" 
+            title="<?php echo $this->translate("Remove property"); ?>" 
+            aria-label="<?php echo $this->translate("Remove property"); ?>"></a>
+        </li>
+        
+    </ul>
+</div>
