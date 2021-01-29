@@ -18,8 +18,7 @@ See general end user documentation for [Installing a module].
 
 Usage
 -----
-After install module, `HideSiteProperties` will auto show in `item` page.`HideSiteProperties` is a read-tool that has two windows, the right side can be used to view the content, the left side can view the media(\*.png,\*.jpg or \*.pdf).The sort binding of the two windows is through the properties 'content' and the sort of 'media'.It is recommended that the paragraphs of the content of `item` are in the same order as the media of `item`.
-
+After install module, `HideSiteProperties` will auto show in `site` setting page.
 Warning
 -------
 
