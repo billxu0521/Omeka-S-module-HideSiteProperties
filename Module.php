@@ -73,7 +73,7 @@ class Module extends AbstractModule
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
     {
-       
+        
         $sharedEventManager->attach(
             '*',
             'rep.resource.display_values',
@@ -84,7 +84,6 @@ class Module extends AbstractModule
     public function handleConfigForm(AbstractController $controller)
     {
         $params = $controller->params()->fromPost();
-        echo json_encode($params['propertyLabel']);
 
         if (isset($params['propertyLabel'])) {
             $property = $params['propertyLabel'];
@@ -125,35 +124,40 @@ class Module extends AbstractModule
     
     public function filterDisplayValues(Event $event)
     {
-        
-        $routeMatch = $this->getServiceLocator()->get('Application')
-                        ->getMvcEvent()->getRouteMatch();
-        $hiddenProperties = [];
-
-        $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
-        $globalcheck = $globalSettings->get('hide_site_properties_use_globals');
-        
-        $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
-        if ($globalSettings->get('hide_site_properties_use_globals')) {
-            $hiddenProperties = $globalSettings->get('hide_site_properties_properties', []);
-        } else {
-            $api = $this->getServiceLocator()->get('Omeka\ApiManager');
-            $sites = $api->search('sites', [])->getContent();
-            $siteSettings = $this->getServiceLocator()->get('Omeka\Settings\Site');
+        $services = $this->getServiceLocator();
+        $site = $services->get('ControllerPluginManager')->get('currentSite');
+        if(is_null($site())){
+            $values = $event->getParams()['values'];
+            $event->setParam('values', $values);
+        }else{
+            $id = $site()->id();
             $hiddenProperties = [];
-            foreach ($sites as $site) {
-                $siteSettings->setTargetId($site->id());
-                $currentSettings = $siteSettings->get('hide_site_properties_properties', []);
+            $status = $this->getServiceLocator()->get('Omeka\Status');
+            $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
+            $globalcheck = $globalSettings->get('hide_site_properties_use_globals');
+
+            
+            if ($globalcheck) {               
+                $hiddenProperties = $globalSettings->get('hide_site_properties_properties', []);
+            } else {
+                $api = $this->getServiceLocator()->get('Omeka\ApiManager');
+                $sites = $api->search('sites', [])->getContent();
+                $siteSettings = $this->getServiceLocator()->get('Omeka\Settings\Site');
+                $hiddenProperties = [];
+                $siteSettings->setTargetId($id);
+                $currentSettings = $siteSettings->get('hide_site_properties_properties', []);                
                 $hiddenProperties = array_merge($currentSettings, $hiddenProperties);
             }
-        }
-        
-        $values = $event->getParams()['values'];
-        
-        foreach ($hiddenProperties as $property) {
-            unset($values[$property]);
-        }
-        $event->setParam('values', $values);
-    }
+            $values = $event->getParams()['values'];
+            if ($status->isAdminRequest()){
 
+            }else{
+               foreach ($hiddenProperties as $property) {
+                unset($values[$property]);
+            } 
+            }
+        
+            $event->setParam('values', $values);
+        }
+    }
 }
